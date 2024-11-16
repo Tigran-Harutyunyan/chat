@@ -95,8 +95,14 @@ const signInWithEmail = handleSubmit(async (values) => {
       </FormItem>
     </FormField>
 
-    <Button type="submit" class="w-full" size="lg" :disabled="isPending">
-      {{ isPending ? "Wait..." : "Continue" }}
+    <Button
+      type="submit"
+      class="w-full"
+      size="lg"
+      :disabled="isPending"
+      :is-loading="isPending"
+    >
+      Continue
     </Button>
   </form>
 </template>

@@ -22,6 +22,7 @@ const workspaceName = ref("");
 const handleSubmit = () => {
   mutate({ name: workspaceName.value, email });
   onClose();
+  workspaceName.value = "";
 };
 </script>
 
@@ -41,7 +42,9 @@ const handleSubmit = () => {
           placeholder="Workspace name e.g. 'Work', 'Personal', 'Home'"
         />
         <div class="flex justify-end">
-          <Button :disabled="isLoading"> Create </Button>
+          <Button :disabled="isLoading" :is-loading="isLoading">
+            Create
+          </Button>
         </div>
       </form>
     </DialogContent>

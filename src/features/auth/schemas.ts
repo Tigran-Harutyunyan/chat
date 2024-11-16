@@ -7,7 +7,7 @@ export const verificationSchema = toTypedSchema(z.object({
 
 export const loginSchema = toTypedSchema(z.object({
   emailAddress: z.string().email(),
-  password: z.string().min(8, "Required"),
+  password: z.string(),
 }));
 
 export const registerSchema = toTypedSchema(z.object({

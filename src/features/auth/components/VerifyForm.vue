@@ -135,8 +135,14 @@ const handleVerify = handleSubmit(async (values) => {
         <FormMessage />
       </FormItem>
     </FormField>
-    <Button type="submit" class="w-full" size="lg" :disabled="isPending">
-      {{ isPending ? "Wait..." : "Complete Sign Up" }}
+    <Button
+      type="submit"
+      class="w-full"
+      size="lg"
+      :disabled="isPending"
+      :is-loading="isPending"
+    >
+      Complete Sign Up
     </Button>
   </form>
 </template>
