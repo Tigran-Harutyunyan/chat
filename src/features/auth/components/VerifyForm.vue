@@ -4,7 +4,6 @@ import { useSignUp } from "vue-clerk";
 import { useForm, configure } from "vee-validate";
 import { verificationSchema } from "../schemas";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   FormControl,
   FormField,
@@ -13,9 +12,20 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-const { handleSubmit, validate } = useForm({
+import {
+  PinInput,
+  PinInputGroup,
+  PinInputInput,
+  PinInputSeparator,
+} from "@/components/ui/pin-input";
+
+defineProps<{
+  email: string;
+}>();
+
+const { handleSubmit, validate, setFieldValue } = useForm({
   initialValues: {
-    code: "",
+    code: [],
   },
   validationSchema: verificationSchema,
 });
@@ -40,17 +50,21 @@ const emit = defineEmits<EmitType>();
 const { signUp, setActive, isLoaded } = useSignUp();
 const isPending = ref(false);
 
+const value = ref<string[]>([]);
+const BOX_COUNT = 6;
+
 const handleVerify = handleSubmit(async (values) => {
   if (!isLoaded.value) return;
 
   if (!validate()) return;
 
   emit("onError", "");
+
   isPending.value = true;
 
   try {
     const completeSignUp = await signUp.value?.attemptEmailAddressVerification({
-      code: values.code + "",
+      code: values.code.join("") + "",
     });
 
     if (completeSignUp && completeSignUp.status !== "complete") {
@@ -90,22 +104,39 @@ const handleVerify = handleSubmit(async (values) => {
 </script>
 
 <template>
+  <h6 class="text-sm text-muted-foreground">
+    Enter verification code sent to
+    <span class="text-sky-700">"{{ email }}"</span>
+  </h6>
   <form @submit.prevent="handleVerify" class="space-y-2.5">
     <FormField name="code" v-slot="{ componentField }">
       <FormItem>
-        <FormLabel>Verification Code </FormLabel>
         <FormControl>
-          <Input
-            v-bind="componentField"
-            type="text"
-            placeholder="Enter verification vode sent to your email box"
-          />
+          <PinInput
+            id="pin-input"
+            v-model="value"
+            placeholder="○"
+            otp
+            type="number"
+            :name="componentField.code"
+            @update:model-value="
+              (arrStr) => {
+                setFieldValue('code', arrStr.filter(Boolean));
+              }
+            "
+          >
+            <PinInputGroup class="gap-1">
+              <template v-for="(id, index) in BOX_COUNT" :key="id">
+                <PinInputInput class="rounded-md border" :index="index" />
+              </template>
+            </PinInputGroup>
+          </PinInput>
         </FormControl>
         <FormMessage />
       </FormItem>
     </FormField>
     <Button type="submit" class="w-full" size="lg" :disabled="isPending">
-      Complete Sign Up
+      {{ isPending ? "Wait..." : "Complete Sign Up" }}
     </Button>
   </form>
 </template>

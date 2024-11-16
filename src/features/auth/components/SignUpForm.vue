@@ -15,7 +15,7 @@ import {
 
 type EmitType = {
   (event: "onError", value: string): void;
-  (event: "onVerify"): void;
+  (event: "onVerify", value: string): void;
 };
 
 const emit = defineEmits<EmitType>();
@@ -61,7 +61,7 @@ const signUpWithEmail = handleSubmit(async (values) => {
       strategy: "email_code",
     });
 
-    emit("onVerify");
+    emit("onVerify", values.emailAddress);
   } catch (err: any) {
     emit("onError", err.errors[0].message);
   } finally {
@@ -143,7 +143,7 @@ const signUpWithEmail = handleSubmit(async (values) => {
     </FormField>
 
     <Button type="submit" class="w-full" size="lg" :disabled="isPending">
-      Continue
+      {{ isPending ? "Wait..." : "Continue" }}
     </Button>
   </form>
 </template>

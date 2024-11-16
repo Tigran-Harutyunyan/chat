@@ -55,9 +55,8 @@ const signInWithEmail = handleSubmit(async (values) => {
     });
     if (result?.status === "complete") {
       await setActive.value?.({ session: result.createdSessionId });
-      router.push("/");
+      router.push("/workspace");
     }
-    console.log(result);
   } catch (err: any) {
     emit("onError", err.errors[0].message);
   } finally {
@@ -97,7 +96,7 @@ const signInWithEmail = handleSubmit(async (values) => {
     </FormField>
 
     <Button type="submit" class="w-full" size="lg" :disabled="isPending">
-      Continue
+      {{ isPending ? "Wait..." : "Continue" }}
     </Button>
   </form>
 </template>

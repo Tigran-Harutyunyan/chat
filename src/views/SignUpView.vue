@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { toast } from "vue-sonner";
+
 import SignUpForm from "@/features/auth/components/SignUpForm.vue";
 import VerifyForm from "@/features/auth/components/VerifyForm.vue";
 import AuthLayout from "@/layouts/AuthLayout.vue";
@@ -12,13 +14,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
+import { Separator } from "@/components/ui/separator";
 import { useConvexMutation } from "@convex-vue/core";
 import { api } from "../../convex/_generated/api";
 
 const isVerifying = ref(false);
 const error = ref("");
-
+const submitedEmail = ref("");
 const router = useRouter();
 
 const setError = (data: string) => {
@@ -29,7 +31,8 @@ const { isLoading: isCreatingUser, mutate } = useConvexMutation(
   api.users.createUser,
   {
     onSuccess() {
-      router.push("/");
+      toast.success("Welcome!");
+      router.push("/workspace");
     },
     onError(err) {
       error.value = err.message;
@@ -50,6 +53,11 @@ const onVerificationSuccess = ({
     name,
   });
 };
+
+const onSendEmail = (email: string) => {
+  submitedEmail.value = email;
+  isVerifying.value = true;
+};
 </script>
 
 <template>
@@ -58,7 +66,7 @@ const onVerificationSuccess = ({
       <CardHeader class="px-0 pt-0">
         <CardTitle> Sign up to continue </CardTitle>
         <CardDescription>
-          {{ isVerifying ? "Verification" : "Use your email to continue" }}
+          {{ isVerifying ? "Code verification" : "Use your email to continue" }}
         </CardDescription>
       </CardHeader>
 
@@ -73,10 +81,11 @@ const onVerificationSuccess = ({
       <CardContent class="space-y-5 px-0 pb-0">
         <VerifyForm
           v-if="isVerifying"
+          :email="submitedEmail"
           @onError="setError"
           @onVerified="onVerificationSuccess"
         />
-        <SignUpForm v-else @onError="setError" @onVerify="isVerifying = true" />
+        <SignUpForm v-else @onError="setError" @onVerify="onSendEmail" />
         <Separator />
 
         <p class="text-xs text-muted-foreground">

@@ -2,7 +2,7 @@ import { z } from "zod";
 import { toTypedSchema } from "@vee-validate/zod";
 
 export const verificationSchema = toTypedSchema(z.object({
-  code: z.string().min(6, "Minimum of 6 characters required"),
+  code: z.array(z.coerce.string()).length(6, { message: 'Invalid input' }),
 }));
 
 export const loginSchema = toTypedSchema(z.object({
