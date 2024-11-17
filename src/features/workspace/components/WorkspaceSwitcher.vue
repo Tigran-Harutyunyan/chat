@@ -9,6 +9,7 @@ import { Loader, Plus } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { useClerkUser } from "@/composables/useClerkUser";
 import { useCreateWorkspaceModal } from "@/features/workspace/store/useCreateWorkspaceModal";
+import { useCollections } from "@/features/workspace/store/useCollections";
 import { useWorkspaceId } from "@/features/workspace/hooks/useWorkspaceId";
 import {
   DropdownMenu,
@@ -21,6 +22,7 @@ import {
 const { email } = useClerkUser();
 const { onOpen } = useCreateWorkspaceModal();
 const { workspaceId } = useWorkspaceId();
+const { saveWorkSpaces } = useCollections();
 
 const route = useRoute();
 const router = useRouter();
@@ -31,6 +33,8 @@ const { data: workspaces, isLoading: workspaceLoading } = useConvexQuery(
     email,
   }
 );
+
+saveWorkSpaces(workspaces.value);
 
 const filteredWorkspaces = computed(() => {
   if (!workspaceId.value) return [];
