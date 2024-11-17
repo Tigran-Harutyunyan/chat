@@ -49,7 +49,7 @@ defineExpose({ openModal });
           {{ confirmMessage }}
         </DialogDescription>
       </DialogHeader>
-      <DialogFooter className="pt-2">
+      <DialogFooter class="pt-2">
         <Button @click="handleUserInput(false)" variant="outline">
           Cancel
         </Button>
