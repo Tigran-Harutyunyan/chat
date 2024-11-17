@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from 'vue';
 
-export const usePreferenceModal = defineStore("workspace-modal", () => {
+export const useEditWorkspaceModal = defineStore("edit-workspace-modal", () => {
     const isOpen = ref(false);
 
     function onOpen() {
