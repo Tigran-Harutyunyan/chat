@@ -30,7 +30,9 @@ interface UserItemProps {
   variant?: VariantProps<typeof userItemVariants>["variant"];
 }
 
-defineProps<UserItemProps>();
+const props = defineProps<UserItemProps>();
+
+const avatarFallback = props.label?.charAt(0).toUpperCase();
 </script>
 
 <template>
@@ -43,7 +45,9 @@ defineProps<UserItemProps>();
     <RouterLink :to="`/workspace/${workspaceId}/member/${id}`">
       <Avatar class="size-5 rounded-md mr-1">
         <AvatarImage class="rounded-md" :src="image" />
-        <AvatarFallback class="rounded-md bg-sky-500 text-white text-xs">
+        <AvatarFallback
+          class="flex items-center justify-center bg-sky-500 text-white w-full h-full text-sm"
+        >
           {{ avatarFallback }}
         </AvatarFallback>
       </Avatar>
