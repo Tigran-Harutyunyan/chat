@@ -10,10 +10,16 @@ import { Button } from "@/components/ui/button";
 interface WorkspaceSectionProps {
   label: string;
   hint: string;
-  onNew?: boolean;
+  allowCreate?: boolean;
 }
 
 defineProps<WorkspaceSectionProps>();
+
+type EmitType = {
+  (event: "onNew"): void;
+};
+
+const emit = defineEmits<EmitType>();
 
 const [value, toggle] = useToggle(false);
 </script>
@@ -27,7 +33,7 @@ const [value, toggle] = useToggle(false);
         @click="toggle()"
       >
         <FaCaretDown
-          :class="cn('size-4 transition-transform', value && '-rotate-90')"
+          :class="cn('size-4 transition-transform', !value && '-rotate-90')"
         />
       </Button>
       <Button
@@ -38,7 +44,7 @@ const [value, toggle] = useToggle(false);
         <span class="truncate">{{ label }}</span>
       </Button>
 
-      <Hint v-if="onNew" :label="hint" side="top" align="center">
+      <Hint v-if="allowCreate" :label="hint" side="top" align="center">
         <Button
           @click="emit('onNew')"
           variant="transparent"

@@ -20,11 +20,15 @@ import { useGetMembers } from "@/features/workspace/api/useGetMembers";
 import { useCurrentMember } from "@/features/members/api/useCurrentMember";
 import { useClerkUser } from "@/composables/useClerkUser";
 import { useRouter } from "vue-router";
+import { useCreateChannelModal } from "@/features/channels/store/useCreateChannelModal";
 
 const { workspaceId } = useWorkspaceId();
 const { channelId } = useChannelId();
 const router = useRouter();
 const { email } = useClerkUser();
+const ADMIN_ROLE = "admin";
+
+const { onOpen } = useCreateChannelModal();
 
 const { data: workspace, isLoading: workspaceLoading } = useGetWorkspace({
   id: workspaceId.value,
@@ -58,7 +62,7 @@ const { data: members } = useGetMembers(workspaceId.value);
   <div v-if="member" class="flex flex-col bg-[#5E2C5F] h-full">
     <WorkspaceHeader
       :workspace="workspace"
-      :isAdmin="member?.role === 'admin'"
+      :isAdmin="member?.role === ADMIN_ROLE"
     />
     <div class="flex flex-col px-2 mt-3">
       <SidebarItem label="Threads" id="threads">
@@ -71,7 +75,8 @@ const { data: members } = useGetMembers(workspaceId.value);
     <WorkspaceSection
       label="Channels"
       hint="New channel"
-      @onNew="member?.role === 'admin' ? () => setOpen(true) : undefined"
+      :allowCreate="member?.role === ADMIN_ROLE"
+      @onNew="onOpen()"
     >
       <SidebarItem
         v-for="item in channels"
