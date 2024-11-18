@@ -32,7 +32,9 @@ const avatarFallback = computed(() => {
     <DropdownMenuTrigger class="outline-none relative">
       <Avatar class="rounded-md size-10 hover:opacity-75 transition">
         <!-- <AvatarImage class="rounded-md" :alt="name" :src="image" /> -->
-        <AvatarFallback class="rounded-[16px] bg-sky-500 text-white w-[16px]">
+        <AvatarFallback
+          class="flex items-center justify-center bg-sky-500 text-white w-full h-full"
+        >
           {{ avatarFallback }}
         </AvatarFallback>
       </Avatar>

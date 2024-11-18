@@ -57,8 +57,6 @@ const showConfirm = async () => {
     email,
     id: workspaceId.value,
   });
-
-  debugger;
 };
 </script>
 
