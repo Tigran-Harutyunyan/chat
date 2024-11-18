@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import DashboardLayout from "../layouts/DashboardLayout.vue";
 import { Loader } from "lucide-vue-next";
 import { cn } from "@/lib/utils";
@@ -13,13 +13,19 @@ import {
 import { useWorkspaceId } from "@/features/workspace/hooks/useWorkspaceId";
 import { useClerkUser } from "@/composables/useClerkUser";
 import { useJoin } from "@/features/workspace/api/useJoin";
-import { useGetWorkspace } from "@/features/workspace/api/useGetWorkspace";
+import { useGetWorkspaceInfo } from "@/features/workspace/api/useGetWorkspaceInfo";
+import { useRouter } from "vue-router";
 
 const code = ref<string[]>([]);
 const BOX_COUNT = 6;
 const { workspaceId } = useWorkspaceId();
 const { email } = useClerkUser();
-const { data, isLoading } = useGetWorkspace({ id: workspaceId.value, email });
+const router = useRouter();
+const { data, isLoading } = useGetWorkspaceInfo({
+  id: workspaceId.value,
+  email,
+});
+
 const { mutate } = useJoin();
 
 const handleComplete = () => {
@@ -29,44 +35,54 @@ const handleComplete = () => {
     workspaceId: workspaceId.value,
   });
 };
+
+watch(
+  () => data,
+  () => {
+    if (data?.value?.isMember) {
+      router.push(`/workspace/${workspaceId.value}`);
+    }
+  },
+  {
+    immediate: true,
+  }
+);
 </script>
 
 <template>
-  <DashboardLayout>
-    <div v-if="isLoading" class="h-full flex items-center justify-center">
-      <Loader class="size-6 animate-spin text-muted-foreground" />
-    </div>
-    <div
-      e-else
-      class="h-full flex flex-col gap-y-8 items-center justify-center bg-white p-8 rounded-lg shadow-md"
-    >
-      <img src="/logo.svg" width="60" height="60" alt="Logo" />
-      <div class="flex flex-col gap-y-4 items-center justify-center max-w-md">
-        <div class="flex flex-col gap-y-2 items-center justify-center">
-          <h1 class="text-2xl font-bold">Join {{ data?.name }}</h1>
-          <p class="text-md text-muted-foreground">
-            Enter the workspace code to join
-          </p>
-        </div>
-        <PinInput
-          id="pin-input"
-          v-model="code"
-          placeholder="○"
-          otp
-          @complete="handleComplete"
-        >
-          <PinInputGroup class="gap-1">
-            <template v-for="(id, index) in BOX_COUNT" :key="id">
-              <PinInputInput class="rounded-md border" :index="index" />
-            </template>
-          </PinInputGroup>
-        </PinInput>
+  <div v-if="isLoading" class="h-full flex items-center justify-center">
+    <Loader class="size-6 animate-spin text-muted-foreground" />
+  </div>
+  <div
+    e-else
+    class="h-full flex flex-col gap-y-8 items-center justify-center bg-white p-8 rounded-lg shadow-md"
+  >
+    <img src="/logo.svg" width="60" height="60" alt="Logo" />
+    <div class="flex flex-col gap-y-4 items-center justify-center max-w-md">
+      <div class="flex flex-col gap-y-2 items-center justify-center">
+        <h1 class="text-2xl font-bold">Join {{ data?.name }}</h1>
+        <p class="text-md text-muted-foreground">
+          Enter the workspace code to join
+        </p>
       </div>
-      <div class="flex gap-x-4">
-        <Button size="lg" variant="outline" as-child>
-          <RouterLink to="/workspace"> Back to home </RouterLink>
-        </Button>
-      </div>
+      <PinInput
+        id="pin-input"
+        v-model="code"
+        placeholder="○"
+        otp
+        @complete="handleComplete"
+      >
+        <PinInputGroup class="gap-1">
+          <template v-for="(id, index) in BOX_COUNT" :key="id">
+            <PinInputInput class="rounded-md border" :index="index" />
+          </template>
+        </PinInputGroup>
+      </PinInput>
     </div>
-  </DashboardLayout>
+    <div class="flex gap-x-4">
+      <Button size="lg" variant="outline" as-child>
+        <RouterLink to="/workspace"> Back to home </RouterLink>
+      </Button>
+    </div>
+  </div>
 </template>
