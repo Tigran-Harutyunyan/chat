@@ -6,6 +6,6 @@ export const useCurrentMember = (workspaceId: Id<"workspaces">) => {
     if (!workspaceId) return { data: null, isLoading: false };
 
     const { email } = useClerkUser();
-    const { data } = useConvexQuery(api.members.current, { email, workspaceId });
-    return { data };
+    const { data, isLoading } = useConvexQuery(api.members.current, { email, workspaceId });
+    return { data, isLoading };
 };
