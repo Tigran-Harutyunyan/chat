@@ -18,6 +18,9 @@ export const useDeleteWorkspace = () => {
             onSuccess() {
                 router.push('/workspace');
                 toast.success("Workspace deleted");
+            },
+            onError: () => {
+                toast.error("Failed to delete channel");
             }
         }
     );

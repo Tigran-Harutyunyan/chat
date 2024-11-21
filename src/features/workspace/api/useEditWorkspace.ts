@@ -14,7 +14,10 @@ export const useEditWorkspace = () => {
         api.workspaces.update,
         {
             onSuccess() {
-                toast.success("Workspace update");
+                toast.success("Workspace updated");
+            },
+            onError: () => {
+                toast.error("Failed to update channel");
             }
         }
     );
