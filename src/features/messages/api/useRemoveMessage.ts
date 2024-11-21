@@ -7,7 +7,7 @@ export const useRemoveMessage = () => {
         api.messages.remove,
         {
             onSuccess() {
-                toast.success("Message deleted");
+                // toast.success("Message deleted");
             },
             onError() {
                 toast.error("Failed to delete message");
