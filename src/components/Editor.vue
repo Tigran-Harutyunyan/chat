@@ -1,11 +1,21 @@
 <script setup lang="ts">
-import { withDefaults, useRef, ref, reactive, computed, watch } from "vue";
+import {
+  withDefaults,
+  useRef,
+  ref,
+  reactive,
+  computed,
+  watch,
+  useTemplateRef,
+  onMounted,
+} from "vue";
 import { quillEditor } from "vue3-quill";
-
+import { type Quill } from "quill";
 import { MdSend } from "vue3-icons/md";
 import { PiTextAa } from "vue3-icons/pi";
 import { ImageIcon, Smile, XIcon } from "lucide-vue-next";
 import { cn } from "@/lib/utils";
+import { onClickOutside } from "@vueuse/core";
 
 import Hint from "@/components/Hint.vue";
 import { Button } from "./ui/button";
@@ -18,7 +28,6 @@ import {
 // Emoji picker
 import data from "emoji-mart-vue-fast/data/all.json";
 import { Picker, EmojiIndex } from "emoji-mart-vue-fast/src";
-import "emoji-mart-vue-fast/css/emoji-mart.css";
 
 type EditorValue = {
   image: File | null;
@@ -26,8 +35,8 @@ type EditorValue = {
 };
 
 type EmitType = {
-  (event: "onSubmit", value: EditorValue): void;
-  (event: "onCancel"): void;
+  (event: "submit", value: EditorValue): void;
+  (event: "cancel"): void;
 };
 
 interface EditorProps {
@@ -45,20 +54,26 @@ const props = withDefaults(defineProps<EditorProps>(), {
 });
 
 const emit = defineEmits<EmitType>();
+const isOpen = ref(false);
+
+let quill: Quill | null = null;
+let emojiIndex = new EmojiIndex(data);
 
 const text = ref("");
 const image = ref<File | null>(null);
 const imageSrc = ref("");
 const isToolbarVisible = ref(true);
-const quillRef = ref(null);
 const submitRef = ref();
 const imageElementRef = ref<HTMLInputElement>(null);
+
+const targetRef = useTemplateRef("pop-over");
+
+onClickOutside(targetRef, (event) => (isOpen.value = false));
+
 const isEmpty = computed(
   () =>
     !image.value && text.value.replace(/<(.|\n)*?>/g, "").trim().length === 0
 );
-
-let emojiIndex = new EmojiIndex(data);
 
 const state = reactive({
   content: "",
@@ -77,7 +92,7 @@ const state = reactive({
           enter: {
             key: "Enter",
             handler: () => {
-              const text = quillRef.value.getText();
+              const text = quill.getText();
               const addedImage = imageElementRef.value.files?.[0] || null;
 
               const isEmpty =
@@ -86,7 +101,7 @@ const state = reactive({
 
               if (isEmpty) return;
 
-              const body = JSON.stringify(quillRef.value.getContents());
+              const body = JSON.stringify(quill.getContents());
               submitRef.value = { body, image: addedImage };
             },
           },
@@ -94,10 +109,7 @@ const state = reactive({
             key: "Enter",
             shiftKey: true,
             handler: () => {
-              quillRef.value.insertText(
-                quillRef.value.getSelection()?.index || 0,
-                "\n"
-              );
+              quill.insertText(quill.getSelection()?.index || 0, "\n");
             },
           },
         },
@@ -121,24 +133,30 @@ const onChangeImage = (event) => {
   imageSrc.value = URL.createObjectURL(image.value);
 };
 
-const insertEmoji = (emoji) => {
-  let lastIndex = quillRef.value.getText().length - 1;
-  quillRef.value.insertText(lastIndex, emoji.native);
+const handleReaction = (emoji) => {
+  let lastIndex = quill.getText().length - 1;
+
+  quill.insertText(lastIndex, emoji.native);
+  isOpen.value = false;
 };
 
-const onEditorReady = (quill) => {
-  quillRef.value = quill;
+const onEditorReady = (data) => {
+  quill = data;
   text.value = quill.getText();
+
+  if (props.defaultValue?.ops) {
+    quill.setContents(props.defaultValue.ops);
+  }
   quill.focus();
 };
 
-const onEditorContentUpdate = (quill) => {
-  text.value = quillRef.value.getText();
+const onEditorContentUpdate = () => {
+  text.value = quill.getText();
 };
 
 const submit = () => {
-  emit("onSubmit", {
-    body: JSON.stringify(quillRef.value?.getContents()),
+  emit("submit", {
+    body: JSON.stringify(quill?.getContents()),
     image: image.value,
   });
 };
@@ -153,9 +171,9 @@ watch(
   () => props.disabled,
   (newVal) => {
     if (newVal) {
-      quillRef.value.disable();
+      quill.disable();
     } else {
-      quillRef.value.enable();
+      quill.enable();
     }
   }
 );
@@ -220,17 +238,24 @@ watch(
           </Button>
         </Hint>
 
-        <Popover>
+        <Popover :open="isOpen" @update-open="isOpen = !isOpen">
           <PopoverTrigger as-child>
-            <Button :disabled="disabled" size="iconSm" variant="ghost">
+            <Button
+              :disabled="disabled"
+              size="iconSm"
+              variant="ghost"
+              @click="isOpen = !isOpen"
+            >
               <Smile class="size-4" />
             </Button>
           </PopoverTrigger>
           <PopoverContent class="w-[340px] p-0">
             <Picker
+              ref="pop-over"
+              v-if="isOpen"
               :data="emojiIndex"
               :show-preview="false"
-              @select="insertEmoji"
+              @select="handleReaction"
             />
           </PopoverContent>
         </Popover>
@@ -253,7 +278,7 @@ watch(
           <Button
             variant="outline"
             size="sm"
-            @click="emit('onCancel')"
+            @click="emit('cancel')"
             :disabled="disabled"
           >
             Cancel
