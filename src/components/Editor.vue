@@ -103,6 +103,7 @@ const state = reactive({
 
               const body = JSON.stringify(quill.getContents());
               submitRef.value = { body, image: addedImage };
+              submit();
             },
           },
           shift_enter: {
