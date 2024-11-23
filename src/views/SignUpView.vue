@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { toast } from "vue-sonner";
-
 import SignUpForm from "@/features/auth/components/SignUpForm.vue";
 import VerifyForm from "@/features/auth/components/VerifyForm.vue";
 import AuthLayout from "@/layouts/AuthLayout.vue";
@@ -27,19 +26,16 @@ const setError = (data: string) => {
   error.value = data;
 };
 
-const { isLoading: isCreatingUser, mutate } = useConvexMutation(
-  api.users.createUser,
-  {
-    onSuccess() {
-      toast.success("Welcome!");
-      router.push("/workspace");
-    },
-    onError(err) {
-      error.value = err.message;
-      isVerifying.value = false;
-    },
-  }
-);
+const { mutate } = useConvexMutation(api.users.createUser, {
+  onSuccess() {
+    toast.success("Welcome!");
+    router.push("/workspace");
+  },
+  onError(err) {
+    error.value = err.message;
+    isVerifying.value = false;
+  },
+});
 
 const onVerificationSuccess = ({
   name,

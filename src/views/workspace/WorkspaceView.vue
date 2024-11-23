@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { watch } from "vue";
-import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
 import DashboardLayout from "@/layouts/DashboardLayout.vue";
 import { useGetWorkspaces } from "@/features/workspace/api/useGetWorkspaces";
@@ -9,7 +8,7 @@ import { useWorkspaceId } from "@/features/workspace/hooks/useWorkspaceId";
 
 const router = useRouter();
 const { onOpen } = useCreateWorkspaceModal();
-const { data, isLoading } = useGetWorkspaces();
+const { data } = useGetWorkspaces();
 const { workspaceId } = useWorkspaceId();
 watch(
   () => data.value,

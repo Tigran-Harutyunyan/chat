@@ -12,7 +12,6 @@ import { useClerkUser } from "@/composables/useClerkUser";
 const { email } = useClerkUser();
 const { memberId } = useMemberId();
 const { workspaceId } = useWorkspaceId();
-
 const conversationId = ref<Id<"conversations"> | null>(null);
 
 const { mutate, isLoading } = useCreateOrGetConversation((id) => {

@@ -7,7 +7,7 @@ import { useRouter } from 'vue-router';
 
 type ResponseType = Id<"workspaces"> | null;
 
-export const useJoin = (cb: (value: string) => void) => {
+export const useJoin = () => {
     const data = ref<ResponseType>(null);
     const error = ref<Error | null>(null);
     const router = useRouter();

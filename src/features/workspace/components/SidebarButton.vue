@@ -23,7 +23,7 @@ defineProps<SidebarButtonProps>();
       "
     >
       <span
-        class="size-5 text-white group-hover:scale-110 transition-all flex items-center"
+        class="size-5 text-white group-hover:scale-110 transition-all flex items-center justify-center"
       >
         <slot />
       </span>

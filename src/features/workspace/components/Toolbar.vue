@@ -10,7 +10,6 @@ import { useGetMembers } from "@/features/workspace/api/useGetMembers";
 import { useClerkUser } from "@/composables/useClerkUser";
 
 import {
-  Command,
   CommandDialog,
   CommandEmpty,
   CommandGroup,
@@ -18,7 +17,6 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-  CommandShortcut,
 } from "@/components/ui/command";
 
 const { workspaceId } = useWorkspaceId();

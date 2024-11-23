@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import { api } from "../../../../convex/_generated/api";
+import { api } from "@convex/api";
 import { useConvexQuery } from "@convex-vue/core";
-
-import { useRoute, useRouter } from "vue-router";
-import { computed, watch, ref } from "vue";
-
+import { useRouter } from "vue-router";
+import { computed } from "vue";
 import { Loader, Plus } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { useClerkUser } from "@/composables/useClerkUser";
@@ -14,15 +12,12 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
 const { email } = useClerkUser();
 const { onOpen } = useCreateWorkspaceModal();
 const { workspaceId } = useWorkspaceId();
-
-const route = useRoute();
 const router = useRouter();
 
 const { data: workspaces, isLoading: workspaceLoading } = useConvexQuery(

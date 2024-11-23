@@ -1,14 +1,11 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import DashboardLayout from "../layouts/DashboardLayout.vue";
 import { Loader } from "lucide-vue-next";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   PinInput,
   PinInputGroup,
   PinInputInput,
-  PinInputSeparator,
 } from "@/components/ui/pin-input";
 import { useWorkspaceId } from "@/features/workspace/hooks/useWorkspaceId";
 import { useClerkUser } from "@/composables/useClerkUser";
@@ -73,8 +70,8 @@ watch(
         @complete="handleComplete"
       >
         <PinInputGroup class="gap-1">
-          <template v-for="(id, index) in BOX_COUNT" :key="id">
-            <PinInputInput class="rounded-md border" :index="index" />
+          <template v-for="item in BOX_COUNT" :key="item">
+            <PinInputInput class="rounded-md border" :index="item" />
           </template>
         </PinInputGroup>
       </PinInput>

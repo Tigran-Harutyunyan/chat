@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { toast } from "vue-sonner";
-
 import {
   defineAsyncComponent,
   computed,
@@ -56,7 +55,7 @@ const isPending = ref(false);
 const target = useTemplateRef("target");
 const { email } = useClerkUser();
 
-let observer = null;
+const observer = ref<IntersectionObserver | null>(null);
 
 const { channelId } = useChannelId();
 const { workspaceId } = useWorkspaceId();
@@ -165,7 +164,7 @@ const handleSubmit = async ({
 };
 onMounted(() => {
   if (target.value) {
-    observer = new IntersectionObserver(
+    observer.value = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !isDone) {
           loadMore();
@@ -174,12 +173,12 @@ onMounted(() => {
       { threshold: 1.0 }
     );
 
-    observer.observe(target.value);
+    observer.value.observe(target.value);
   }
 });
 
 onUnmounted(() => {
-  observer?.disconnect();
+  observer.value?.disconnect();
 });
 </script>
 

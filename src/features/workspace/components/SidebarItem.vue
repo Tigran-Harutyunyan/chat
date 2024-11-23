@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { LucideIcon } from "lucide-vue-next";
-import { IconType } from "vue3-icons/lib";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";

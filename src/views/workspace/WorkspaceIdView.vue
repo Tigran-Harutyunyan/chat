@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import DashboardLayout from "@/layouts/DashboardLayout.vue";
-import { ref, computed, watch } from "vue";
+import { computed, watch } from "vue";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { Loader, TriangleAlert } from "lucide-vue-next";
@@ -31,7 +31,7 @@ const { data: member, isLoading: memberLoading } = useCurrentMember(
 );
 
 const isLoading = computed(() => {
-  return workspaceLoading.value || channelsLoading.value || memberLoading.value;
+  return workspaceLoading || channelsLoading || memberLoading;
 });
 
 const isAdmin = computed(() => member?.value?.role === "admin");
@@ -41,7 +41,7 @@ watch(
   () => isLoading.value,
   (newVal) => {
     if (newVal) return;
-    if (!member.value || !workspace.value) return;
+    if (!member?.value || !workspace?.value) return;
 
     if (channelId.value) {
       router.push(`/workspace/${workspaceId.value}/channel/${channelId.value}`);
