@@ -1,33 +1,30 @@
 <script setup lang="ts">
 import { toast } from "vue-sonner";
-import { ref } from "vue";
-import { Id } from "../../../../convex/_generated/dataModel";
-//const Editor = defineAsyncComponent(() => import("@/components/Editor.vue"));
-import Editor from "@/components/Editor.vue";
+import { ref, defineAsyncComponent } from "vue";
+import { Id } from "@convex/dataModel";
 import { useGenerateUploadUrl } from "@/features/upload/api/useGenerateUploadUrl";
 import { useCreateMessage } from "@/features/messages/api/useCreateMessage";
 import { useChannelId } from "@/features/channels/hooks/useChannelId";
 import { useWorkspaceId } from "@/features/workspace/hooks/useWorkspaceId";
 import { useClerkUser } from "@/composables/useClerkUser";
 
+const Editor = defineAsyncComponent(() => import("@/components/Editor.vue"));
+
 interface ChatInputProps {
   placeholder: string;
-  conversationId?: Id<"conversations">;
 }
 
 type CreateMesageValues = {
-  conversationId: Id<"conversations">;
+  channelId: Id<"channels">;
   workspaceId: Id<"workspaces">;
   body: string;
   image: Id<"_storage"> | undefined;
-  channelId?: Id<"channels">;
-  parentMessageId?: I<"messages">;
 };
 
-const props = defineProps<ChatInputProps>();
-
+defineProps<ChatInputProps>();
 const editorKey = ref(0);
 const isPending = ref(false);
+
 const { mutate: generateUploadUrl } = useGenerateUploadUrl();
 const { mutate: createMessage } = useCreateMessage();
 const { channelId } = useChannelId();
@@ -45,7 +42,6 @@ const handleSubmit = async ({
     isPending.value = true;
 
     const values: CreateMesageValues = {
-      conversationId: props.conversationId,
       workspaceId: workspaceId.value,
       channelId: channelId.value,
       body,
@@ -54,7 +50,7 @@ const handleSubmit = async ({
     };
 
     if (image) {
-      const url = await generateUploadUrl({}, { throwError: true });
+      const url = await generateUploadUrl({});
 
       if (!url) {
         throw new Error("Url not found");
@@ -74,7 +70,7 @@ const handleSubmit = async ({
       values.image = storageId;
     }
 
-    await createMessage(values, { throwError: true });
+    await createMessage(values);
 
     editorKey.value = editorKey.value + 1;
   } catch (error) {

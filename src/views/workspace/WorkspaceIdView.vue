@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, watch } from "vue";
 import DashboardLayout from "@/layouts/DashboardLayout.vue";
+import { ref, computed, watch } from "vue";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { Loader, TriangleAlert } from "lucide-vue-next";
@@ -12,18 +12,20 @@ import { useCurrentMember } from "@/features/members/api/useCurrentMember";
 import { useCreateChannelModal } from "@/features/channels/store/useCreateChannelModal";
 
 const { workspaceId } = useWorkspaceId();
-const router = useRouter();
 const { email } = useClerkUser();
 const { onOpen } = useCreateChannelModal();
 const { isOpen } = storeToRefs(useCreateChannelModal());
+const router = useRouter();
 
 const { data: workspace, isLoading: workspaceLoading } = useGetWorkspace({
   id: workspaceId.value,
   email,
 });
+
 const { data: channels, isLoading: channelsLoading } = useGetChannels(
   workspaceId.value
 );
+
 const { data: member, isLoading: memberLoading } = useCurrentMember(
   workspaceId.value
 );

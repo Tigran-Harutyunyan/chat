@@ -18,7 +18,6 @@ import ConfirmDialog from "@/components/ConfirmDialog.vue";
 
 import { useWorkspaceId } from "@/features/workspace/hooks/useWorkspaceId";
 import { useChannelId } from "@/features/channels/hooks/useChannelId";
-
 import { useCurrentMember } from "@/features/members/api/useCurrentMember";
 import { useUpdateChannel } from "@/features/channels/api/useUpdateChannel";
 import { useRemoveChannel } from "@/features/channels/api/useRemoveChannel";
@@ -41,22 +40,18 @@ const { email } = useClerkUser();
 const { channelId } = useChannelId();
 const { workspaceId } = useWorkspaceId();
 
-const { data: member, isLoading: memberLoading } = useCurrentMember(
-  workspaceId.value
-);
+const { data: member } = useCurrentMember(workspaceId.value);
 
-const { data: channels, isLoading: channelsLoading } = useGetChannels(
-  workspaceId.value
-);
+const { data: channels } = useGetChannels(workspaceId.value);
 
-const { mutate: updateChannel, isPending: isUpdatingChannel } =
+const { mutate: updateChannel, isLoading: isUpdatingChannel } =
   useUpdateChannel(() => {
     isEditOpen.value = false;
   });
 
-const { mutate: removeChannel, isPending: isRemovingChannel } =
+const { mutate: removeChannel, isLoading: isRemovingChannel } =
   useRemoveChannel((deletedId: string) => {
-    const filtered = channels.value.filter((chan) => chan._id !== deletedId);
+    const filtered = channels?.value.filter((chan) => chan._id !== deletedId);
 
     if (filtered?.length) {
       router.push(`/workspace/${workspaceId.value}/channel/${filtered[0]._id}`);
@@ -66,7 +61,7 @@ const { mutate: removeChannel, isPending: isRemovingChannel } =
   });
 
 const handleisEditOpen = (value: boolean) => {
-  if (member?.value.role !== "admin") return;
+  if (member?.value?.role !== "admin") return;
   isEditOpen.value = value;
 };
 
