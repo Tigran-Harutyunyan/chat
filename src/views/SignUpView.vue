@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useConvexMutation } from "@convex-vue/core";
-import { api } from "../../convex/_generated/api";
+import { api } from "@convex/api";
 
 const isVerifying = ref(false);
 const error = ref("");

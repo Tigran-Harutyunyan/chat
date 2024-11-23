@@ -1,5 +1,5 @@
-import { api } from "../../../../convex/_generated/api";
-import { Id } from "../../../../convex/_generated/dataModel";
+import { api } from "@convex/api";
+import { Id } from "@convex/dataModel";
 import { useConvexPaginatedQuery } from "@convex-vue/core";
 import { useClerkUser } from '@/composables/useClerkUser';
 
@@ -10,7 +10,6 @@ interface UseGetMessagesProps {
     conversationId?: Id<"conversations">;
     parentMessageId?: Id<"messages">;
 };
-
 export const useGetMessages = ({
     channelId,
     conversationId,

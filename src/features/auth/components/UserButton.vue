@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useConvexQuery } from "@convex-vue/core";
-import { api } from "../../../../convex/_generated/api";
+import { api } from "@convex/api";
 
 import { Loader, LogOut } from "lucide-vue-next";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";

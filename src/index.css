@@ -73,6 +73,12 @@ body,
     @apply bg-background text-foreground;
   }
 }
+.sidebar-item-icon-wrapper svg {
+  width: 0.875rem;
+  height: 0.875rem;
+  margin-right: 0.25rem;
+  flex-shrink: 0;
+}
 
 body > div:first-of-type {
   height: 100%;

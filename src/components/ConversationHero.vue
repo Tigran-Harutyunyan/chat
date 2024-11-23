@@ -6,7 +6,9 @@ interface ConversationHeroProps {
   image?: string;
 }
 
-defineProps<ConversationHeroProps>();
+const { image = "", name = "" } = defineProps<ConversationHeroProps>();
+
+const avatarFallback = name?.charAt(0).toUpperCase();
 </script>
 
 <template>

@@ -3,10 +3,11 @@ import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { useWorkspaceId } from "@/hooks/use-workspace-id";
+import { useWorkspaceId } from "@/features/workspace/hooks/useWorkspaceId";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Id } from "@convex/dataModel";
 
-import { Id } from "../../../../convex/_generated/dataModel";
+const { workspaceId } = useWorkspaceId();
 
 const userItemVariants = cva(
   "flex items-center gap-1.5 justify-start font-normal h-7 px-4 text-sm overflow-hidden",
@@ -44,7 +45,7 @@ const avatarFallback = props.label?.charAt(0).toUpperCase();
   >
     <RouterLink :to="`/workspace/${workspaceId}/member/${id}`">
       <Avatar class="size-5 rounded-md mr-1">
-        <AvatarImage class="rounded-md" :src="image" />
+        <AvatarImage class="rounded-md" :src="image || ''" />
         <AvatarFallback
           class="flex items-center justify-center bg-sky-500 text-white w-full h-full text-sm"
         >

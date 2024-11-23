@@ -1,8 +1,8 @@
 import { ref } from 'vue';
 import { toast } from 'vue-sonner';
 import { useRouter } from 'vue-router';
-import { api } from "../../../../convex/_generated/api";
-import { Id } from "../../../../convex/_generated/dataModel";
+import { api } from "@convex/api";
+import { Id } from "@convex/dataModel";
 import { useConvexMutation } from "@convex-vue/core";
 
 type ResponseType = Id<"workspaces"> | null;

@@ -1,13 +1,13 @@
 import { Ref, computed, createApp, ref } from 'vue';
 import { Resources } from '@clerk/types';
 
+import "emoji-mart-vue-fast/css/emoji-mart.css";
 import './index.css';
+
 import App from './App.vue';
 import router from "./router";
 import { createConvexVue } from "@convex-vue/core";
 import { clerkPlugin } from 'vue-clerk'
-// import { VueQueryPlugin } from '@tanstack/vue-query';
-
 import { createPinia } from 'pinia';
 
 const pinia = createPinia();
@@ -57,5 +57,4 @@ app
     .use(pinia)
     .use(router)
     .use(convexVue)
-    // .use(VueQueryPlugin)
     .mount("#app");

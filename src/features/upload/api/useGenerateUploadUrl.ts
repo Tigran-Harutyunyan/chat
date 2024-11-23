@@ -1,4 +1,4 @@
-import { api } from "../../../../convex/_generated/api";
+import { api } from "@convex/api";
 import { useConvexMutation } from "@convex-vue/core";
 export const useGenerateUploadUrl = () => {
 

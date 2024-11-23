@@ -8,7 +8,7 @@ import {
   Pencil,
   UserRoundPlus,
 } from "lucide-vue-next";
-import { Doc } from "../../../../convex/_generated/dataModel";
+import { Doc } from "@convex/dataModel";
 import Hint from "@/components/Hint.vue";
 import { Button } from "@/components/ui/button";
 import {
@@ -40,7 +40,7 @@ defineProps<WorkspaceHeaderProps>();
 
 const { onOpen } = useEditWorkspaceModal();
 
-const { mutate, isLoading } = useDeleteWorkspace();
+const { mutate } = useDeleteWorkspace();
 const { workspaceId } = useWorkspaceId();
 const { email } = useClerkUser();
 const { onOpen: onOpenInviteModal } = useInviteModal();

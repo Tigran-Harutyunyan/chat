@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import { toast } from 'vue-sonner';
-import { api } from "../../../../convex/_generated/api";
-import { Id } from "../../../../convex/_generated/dataModel";
+import { api } from "@convex/api";
+import { Id } from "@convex/dataModel";
 import { useConvexMutation } from "@convex-vue/core";
 import { useRouter } from 'vue-router';
 

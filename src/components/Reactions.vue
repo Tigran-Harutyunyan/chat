@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, useTemplateRef } from "vue";
-import { MdOutlineAddReaction } from "vue3-icons/md";
+import MdOutlineAddReaction from "@/components/icons/MdOutlineAddReaction.vue";
 import { cn } from "@/lib/utils";
 import {
   Popover,
@@ -12,8 +12,7 @@ import Hint from "@/components/Hint.vue";
 import { useWorkspaceId } from "@/features/workspace/hooks/useWorkspaceId";
 import { useCurrentMember } from "@/features/members/api/useCurrentMember";
 
-import { EmojiPopover } from "./emoji-popover";
-import { Doc, Id } from "../../convex/_generated/dataModel";
+import { Doc, Id } from "@convex/dataModel";
 
 // Emoji picker
 import data from "emoji-mart-vue-fast/data/all.json";

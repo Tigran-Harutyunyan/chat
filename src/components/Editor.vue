@@ -1,29 +1,19 @@
 <script setup lang="ts">
-import {
-  withDefaults,
-  useRef,
-  ref,
-  reactive,
-  computed,
-  watch,
-  useTemplateRef,
-  onMounted,
-} from "vue";
+import { ref, reactive, computed, watch, useTemplateRef } from "vue";
 import { quillEditor } from "vue3-quill";
 import { type Quill } from "quill";
-import { MdSend } from "vue3-icons/md";
+import MdSend from "@/components/icons/MdSend.vue";
 import { PiTextAa } from "vue3-icons/pi";
 import { ImageIcon, Smile, XIcon } from "lucide-vue-next";
-import { cn } from "@/lib/utils";
+import { cn } from "../lib/utils";
 import { onClickOutside } from "@vueuse/core";
-
 import Hint from "@/components/Hint.vue";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "../components/ui/popover";
 
 // Emoji picker
 import data from "emoji-mart-vue-fast/data/all.json";
@@ -64,9 +54,10 @@ const image = ref<File | null>(null);
 const imageSrc = ref("");
 const isToolbarVisible = ref(true);
 const submitRef = ref();
-const imageElementRef = ref<HTMLInputElement>(null);
+const imageElementRef = ref<HTMLInputElement | null>(null);
 
 const targetRef = useTemplateRef("pop-over");
+const editorRef = useTemplateRef("editor");
 
 onClickOutside(targetRef, (event) => (isOpen.value = false));
 
@@ -122,7 +113,7 @@ const state = reactive({
 
 const toggleToolbar = () => {
   isToolbarVisible.value = !isToolbarVisible.value;
-  const toolbarElement = document?.querySelector(".ql-toolbar");
+  const toolbarElement = editorRef.value?.querySelector(".ql-toolbar");
 
   if (toolbarElement) {
     toolbarElement.classList.toggle("hidden");
@@ -164,7 +155,7 @@ const submit = () => {
 
 const removeImage = () => {
   image.value = null;
-  imageElementRef.value = "";
+  imageElementRef.value = null;
   imageSrc.value = "";
 };
 
@@ -199,7 +190,7 @@ watch(
       "
     >
       <div ref="containerRef" class="h-full ql-custom" />
-      <div>
+      <div ref="editor">
         <quill-editor
           v-model:value="state.content"
           :options="state.editorOption"
@@ -263,7 +254,7 @@ watch(
 
         <Hint v-if="variant === 'create'" label="Image">
           <Button
-            @click="imageElementRef.click()"
+            @click="imageElementRef?.click()"
             :disabled="disabled"
             size="iconSm"
             variant="ghost"

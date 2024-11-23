@@ -1,6 +1,6 @@
-import { api } from "../../../../convex/_generated/api";
+import { api } from "@convex/api";
 import { useConvexQuery } from "@convex-vue/core";
-import { Id } from "../../../../convex/_generated/dataModel";
+import { Id } from "@convex/dataModel";
 
 interface UseGetWorkspaceProps {
     id: Id<"workspaces">;

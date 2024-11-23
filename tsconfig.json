@@ -5,7 +5,10 @@
     "module": "ESNext",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
-
+    "paths": {
+      "@/*": ["./src/*"],
+      "@convex/*": ["./convex/_generated"],
+    },
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
@@ -20,6 +23,8 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "src/router.js","src/components/ui/**/*.ts"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "src/router.js","src/components/ui/**/*.ts", "./convex/auth.config.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
+
+// restart typescript extension cmd + shift + p . Type "restart" in the prompt and look for "TypeScript: Restart TS Server"

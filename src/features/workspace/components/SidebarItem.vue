@@ -27,9 +27,12 @@ interface SidebarItemProps {
   label: string;
   id: string;
   variant?: VariantProps<typeof sidebarItemVariants>["variant"];
+  linked?: boolean;
 }
 
-defineProps<SidebarItemProps>();
+withDefaults(defineProps<SidebarItemProps>(), {
+  linked: true,
+});
 </script>
 
 <template>
@@ -39,7 +42,7 @@ defineProps<SidebarItemProps>();
     :class="cn(sidebarItemVariants({ variant }))"
     as-child
   >
-    <RouterLink :to="`/workspace/${workspaceId}/channel/${id}`">
+    <RouterLink v-if="linked" :to="`/workspace/${workspaceId}/channel/${id}`">
       <div class="flex items-center">
         <div class="sidebar-item-icon-wrapper">
           <slot />
@@ -47,5 +50,12 @@ defineProps<SidebarItemProps>();
         <span class="text-sm truncate">{{ label }}</span>
       </div>
     </RouterLink>
+
+    <div v-else class="flex items-center">
+      <div class="sidebar-item-icon-wrapper">
+        <slot />
+      </div>
+      <span class="text-sm truncate">{{ label }}</span>
+    </div>
   </Button>
 </template>

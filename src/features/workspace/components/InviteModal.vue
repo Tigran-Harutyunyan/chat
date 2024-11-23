@@ -3,7 +3,6 @@ import { ref } from "vue";
 import { toast } from "vue-sonner";
 import { CopyIcon, RefreshCcw } from "lucide-vue-next";
 import { storeToRefs } from "pinia";
-import { useConfirm } from "@/hooks/use-confirm";
 import { useWorkspaceId } from "@/features/workspace/hooks/useWorkspaceId";
 import { useNewJoinCode } from "@/features/workspace/api/useNewJoinCode";
 import { useInviteModal } from "@/features/workspace/store/useInviteModal";

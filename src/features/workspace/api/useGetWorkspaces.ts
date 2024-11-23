@@ -1,4 +1,4 @@
-import { api } from "../../../../convex/_generated/api";
+import { api } from "@convex/api";
 import { useConvexQuery } from "@convex-vue/core";
 import { useClerkUser } from '@/composables/useClerkUser';
 export const useGetWorkspaces = () => {

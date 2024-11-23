@@ -1,5 +1,5 @@
-import { api } from "../../../../convex/_generated/api";
-import { Id } from "../../../../convex/_generated/dataModel";
+import { api } from "@convex/api";
+import { Id } from "@convex/dataModel";
 import { useConvexQuery } from "@convex-vue/core";
 import { useClerkUser } from '@/composables/useClerkUser';
 export const useGetChannel = (channelId: Id<"channels">) => {

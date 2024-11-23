@@ -6,6 +6,7 @@ import ChatInput from "@/features/channels/components/ChatInput.vue";
 import { useChannelId } from "@/features/channels/hooks/useChannelId";
 import { useGetChannel } from "@/features/channels/api/useGetChannel";
 import { useGetMessages } from "@/features/messages/api/useGetMessages";
+import { Id } from "@convex/dataModel";
 
 const { channelId } = useChannelId();
 const {
@@ -19,7 +20,7 @@ const {
 });
 
 interface Props {
-  channelId: string;
+  channelId: Id<"channels">;
 }
 
 const props = defineProps<Props>();
