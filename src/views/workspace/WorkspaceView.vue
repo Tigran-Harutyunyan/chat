@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { watch } from "vue";
 import { useRouter } from "vue-router";
-import DashboardLayout from "@/layouts/DashboardLayout.vue";
 import { useGetWorkspaces } from "@/features/workspace/api/useGetWorkspaces";
 import { useCreateWorkspaceModal } from "@/features/workspace/store/useCreateWorkspaceModal";
 import { useWorkspaceId } from "@/features/workspace/hooks/useWorkspaceId";
@@ -31,6 +30,4 @@ watch(
 );
 </script>
 
-<template>
-  <DashboardLayout> </DashboardLayout>
-</template>
+<template></template>

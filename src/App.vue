@@ -2,6 +2,7 @@
 import { Loader } from "lucide-vue-next";
 import { ClerkLoaded, ClerkLoading } from "vue-clerk";
 import { Toaster } from "@/components/ui/sonner";
+import AppLayout from "@/layouts/AppLayout.vue";
 </script>
 
 <template>
@@ -12,6 +13,6 @@ import { Toaster } from "@/components/ui/sonner";
   </ClerkLoading>
   <ClerkLoaded>
     <Toaster />
-    <RouterView />
+    <AppLayout />
   </ClerkLoaded>
 </template>

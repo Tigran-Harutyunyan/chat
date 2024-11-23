@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, watchEffect } from "vue";
-import DashboardLayout from "@/layouts/DashboardLayout.vue";
 import { AlertTriangle, Loader } from "lucide-vue-next";
 import { Id } from "@convex/dataModel";
 import { useWorkspaceId } from "@/features/workspace/hooks/useWorkspaceId";
@@ -28,21 +27,19 @@ watchEffect(() => {
 </script>
 
 <template>
-  <DashboardLayout>
-    <div v-if="isLoading" class="h-full flex items-center justify-center">
-      <Loader class="size-6 animate-spin text-muted-foreground" />
+  <div v-if="isLoading" class="h-full flex items-center justify-center">
+    <Loader class="size-6 animate-spin text-muted-foreground" />
+  </div>
+  <template v-else>
+    <div
+      v-if="!conversationId"
+      class="h-full flex flex-col gap-y-2 items-center justify-center"
+    >
+      <AlertTriangle class="size-6 text-muted-foreground" />
+      <span class="text-sm text-muted-foreground">
+        Conversation not found
+      </span>
     </div>
-    <template v-else>
-      <div
-        v-if="!conversationId"
-        class="h-full flex flex-col gap-y-2 items-center justify-center"
-      >
-        <AlertTriangle class="size-6 text-muted-foreground" />
-        <span class="text-sm text-muted-foreground">
-          Conversation not found
-        </span>
-      </div>
-      <Conversation v-else :id="conversationId" />
-    </template>
-  </DashboardLayout>
+    <Conversation v-else :id="conversationId" />
+  </template>
 </template>

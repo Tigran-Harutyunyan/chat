@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import DashboardLayout from "@/layouts/DashboardLayout.vue";
-import { computed, watch } from "vue";
+import { computed, watchEffect, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { Loader, TriangleAlert } from "lucide-vue-next";
@@ -13,7 +12,7 @@ import { useCreateChannelModal } from "@/features/channels/store/useCreateChanne
 
 const { workspaceId } = useWorkspaceId();
 const { email } = useClerkUser();
-const { onOpen } = useCreateChannelModal();
+const { onOpen, onClose } = useCreateChannelModal();
 const { isOpen } = storeToRefs(useCreateChannelModal());
 const router = useRouter();
 
@@ -37,44 +36,47 @@ const isLoading = computed(() => {
 const isAdmin = computed(() => member?.value?.role === "admin");
 const channelId = computed(() => channels?.value?.[0]?._id);
 
-watch(
-  () => isLoading.value,
-  (newVal) => {
-    if (newVal) return;
-    if (!member?.value || !workspace?.value) return;
+watchEffect(() => {
+  if (!isLoading.value) return;
+  if (!member?.value || !workspace?.value) return;
 
-    if (channelId.value) {
-      router.push(`/workspace/${workspaceId.value}/channel/${channelId.value}`);
-    } else if (isAdmin.value && !isOpen.value) {
-      onOpen();
-    }
+  if (channelId.value) {
+    router.push(`/workspace/${workspaceId.value}/channel/${channelId.value}`);
+    return;
   }
-);
+  if (isAdmin.value && !channels?.value?.length && !isOpen.value) {
+    onOpen();
+  }
+});
+
+onUnmounted(() => {
+  if (isOpen.value) {
+    onClose();
+  }
+});
 </script>
 
 <template>
-  <DashboardLayout>
+  <div
+    v-if="isLoading"
+    class="h-full flex-1 flex items-center justify-center flex-col gap-2"
+  >
+    <Loader class="size-6 animate-spin text-muted-foreground" />
+  </div>
+  <template v-else>
     <div
-      v-if="isLoading"
+      v-if="!workspace || !member"
       class="h-full flex-1 flex items-center justify-center flex-col gap-2"
     >
-      <Loader class="size-6 animate-spin text-muted-foreground" />
+      <TriangleAlert class="size-6 text-muted-foreground" />
+      <span class="text-sm text-muted-foreground"> Workspace not found </span>
     </div>
-    <template v-else>
-      <div
-        v-if="!workspace || !member"
-        class="h-full flex-1 flex items-center justify-center flex-col gap-2"
-      >
-        <TriangleAlert class="size-6 text-muted-foreground" />
-        <span class="text-sm text-muted-foreground"> Workspace not found </span>
-      </div>
-      <div
-        v-else
-        class="h-full flex-1 flex items-center justify-center flex-col gap-2"
-      >
-        <TriangleAlert class="size-6 text-muted-foreground" />
-        <span class="text-sm text-muted-foreground"> No channel found </span>
-      </div>
-    </template>
-  </DashboardLayout>
+    <div
+      v-else
+      class="h-full flex-1 flex items-center justify-center flex-col gap-2"
+    >
+      <TriangleAlert class="size-6 text-muted-foreground" />
+      <span class="text-sm text-muted-foreground"> No channel found </span>
+    </div>
+  </template>
 </template>
