@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { onMounted } from "vue";
 import { PlusIcon } from "lucide-vue-next";
 import { FaCaretDown } from "vue3-icons/fa";
 import { useToggle } from "@vueuse/core";
-
 import { cn } from "@/lib/utils";
 import Hint from "@/components/Hint.vue";
 import { Button } from "@/components/ui/button";
@@ -11,9 +11,10 @@ interface WorkspaceSectionProps {
   label: string;
   hint: string;
   allowCreate?: boolean;
+  showOpen?: boolean;
 }
 
-defineProps<WorkspaceSectionProps>();
+const props = defineProps<WorkspaceSectionProps>();
 
 type EmitType = {
   (event: "onNew"): void;
@@ -22,6 +23,11 @@ type EmitType = {
 const emit = defineEmits<EmitType>();
 
 const [value, toggle] = useToggle(false);
+onMounted(() => {
+  if (props.showOpen && !value.value) {
+    toggle(true);
+  }
+});
 </script>
 
 <template>
@@ -37,6 +43,7 @@ const [value, toggle] = useToggle(false);
         />
       </Button>
       <Button
+        @click="toggle()"
         variant="transparent"
         size="sm"
         class="group px-1.5 text-sm text-[#f9edffcc] h-[28px] justify-start overflow-hidden items-center"
