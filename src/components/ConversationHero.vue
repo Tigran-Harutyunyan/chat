@@ -14,9 +14,11 @@ const avatarFallback = name?.charAt(0).toUpperCase();
 <template>
   <div class="mt-[88px] mx-5 mb-4">
     <div class="flex items-center gap-x-1 mb-2">
-      <Avatar class="size-14 mr-2">
+      <Avatar class="size-12 mr-2 rounded-md">
         <AvatarImage :src="image" />
-        <AvatarFallback>{{ avatarFallback }}</AvatarFallback>
+        <AvatarFallback class="aspect-square">{{
+          avatarFallback
+        }}</AvatarFallback>
       </Avatar>
       <p class="text-2xl font-bold">
         {{ name }}
