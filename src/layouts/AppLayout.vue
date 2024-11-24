@@ -3,6 +3,8 @@ import { computed } from "vue";
 import { useRoute } from "vue-router";
 import DashboardLayout from "@/layouts/DashboardLayout.vue";
 import AuthLayout from "@/layouts/AuthLayout.vue";
+import JoinWorkspaceLayout from "@/layouts/JoinWorkspaceLayout.vue";
+
 const route = useRoute();
 
 const layout = computed(() => {
@@ -14,6 +16,8 @@ const layout = computed(() => {
         return DashboardLayout;
       case "AuthLayout":
         return AuthLayout;
+      case "JoinWorkspaceLayout":
+        return JoinWorkspaceLayout;
       default:
         return "div";
     }
