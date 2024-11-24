@@ -1,6 +1,8 @@
 # Collaboration tool with wide range of features. Vue.js, Tailwind, Shadcn, Convex
 
-[Live Demo](https://chat-ksrob8dfe-htigrans-projects.vercel.app)
+[Live app](https://chat-ksrob8dfe-htigrans-projects.vercel.app)
+
+[Video](https://shorturl.at/Jd8GL)
 
 Features:
 
