@@ -5,7 +5,8 @@ import { type Quill } from "quill";
 import MdSend from "@/components/icons/MdSend.vue";
 import { PiTextAa } from "vue3-icons/pi";
 import { ImageIcon, Smile, XIcon } from "lucide-vue-next";
-import { cn } from "../lib/utils";
+
+import { cn } from "@/lib/utils";
 import { onClickOutside } from "@vueuse/core";
 import Hint from "@/components/Hint.vue";
 import { Button } from "@/components/ui/button";
@@ -13,7 +14,7 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "../components/ui/popover";
+} from "@/components/ui/popover";
 
 // Emoji picker
 import data from "emoji-mart-vue-fast/data/all.json";

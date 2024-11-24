@@ -51,7 +51,7 @@ watch(
     <Loader class="size-6 animate-spin text-muted-foreground" />
   </div>
   <div
-    e-else
+    v-else
     class="h-full flex flex-col gap-y-8 items-center justify-center bg-white p-8 rounded-lg shadow-md"
   >
     <img src="/logo.svg" width="60" height="60" alt="Logo" />
