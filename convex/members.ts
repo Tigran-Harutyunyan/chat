@@ -1,6 +1,6 @@
 import { v } from "convex/values";
-import { Id } from "../jsx/convex/_generated/dataModel";
-import { mutation, query, QueryCtx } from "../jsx/convex/_generated/server";
+import { Id } from "../convex/_generated/dataModel";
+import { mutation, query, QueryCtx } from "../convex/_generated//server";
 import { getCurrentUser } from '../src/lib/context'
 
 const populateUser = (ctx: QueryCtx, id: Id<"users">) => {
