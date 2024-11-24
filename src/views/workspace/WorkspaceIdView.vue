@@ -40,10 +40,11 @@ watchEffect(() => {
   if (!isLoading.value) return;
   if (!member?.value || !workspace?.value) return;
 
-  if (channelId.value) {
+  if (workspaceId.value && channelId.value) {
     router.push(`/workspace/${workspaceId.value}/channel/${channelId.value}`);
     return;
   }
+
   if (isAdmin.value && !channels?.value?.length && !isOpen.value) {
     onOpen();
   }
