@@ -7,6 +7,7 @@ import { useCreateMessage } from "@/features/messages/api/useCreateMessage";
 import { useChannelId } from "@/features/channels/hooks/useChannelId";
 import { useWorkspaceId } from "@/features/workspace/hooks/useWorkspaceId";
 import { useClerkUser } from "@/composables/useClerkUser";
+import { useUi } from "@/store/useUi";
 
 const Editor = defineAsyncComponent(() => import("@/components/Editor.vue"));
 
@@ -30,6 +31,7 @@ const { mutate: createMessage } = useCreateMessage();
 const { channelId } = useChannelId();
 const { workspaceId } = useWorkspaceId();
 const { email } = useClerkUser();
+const { saveNewMessageId } = useUi();
 
 const handleSubmit = async ({
   body,
@@ -70,7 +72,10 @@ const handleSubmit = async ({
       values.image = storageId;
     }
 
-    await createMessage(values);
+    const id = await createMessage(values);
+    if (id) {
+      saveNewMessageId(id);
+    }
 
     editorKey.value = editorKey.value + 1;
   } catch (error) {
