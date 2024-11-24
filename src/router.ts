@@ -27,6 +27,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/join/:workspaceId",
     component: () => import("./views/JoinWorkspaceView.vue"),
+    meta: { layout: 'JoinWorkspaceLayout' }
   },
   { path: '/:pathMatch(.*)*', redirect: '/workspace' }
 ];
