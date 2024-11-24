@@ -27,7 +27,7 @@ const emit = defineEmits<EmitType>();
       size="sm"
       @click="emit('click')"
     >
-      <Avatar class="size-6 mr-2">
+      <Avatar class="size-6 mr-2 rounded-md">
         <AvatarImage :src="memberImage || ''" />
         <AvatarFallback>
           {{ memberName?.charAt(0).toUpperCase() }}

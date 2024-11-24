@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { TrashIcon } from "lucide-vue-next";
-import { FaChevronDown } from "vue3-icons/fa";
+import { TrashIcon, Pencil } from "lucide-vue-next";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogTrigger,
   DialogHeader,
   DialogTitle,
   DialogClose,
@@ -33,7 +31,6 @@ const props = defineProps<HeaderProps>();
 const confirm = ref<InstanceType<typeof ConfirmDialog> | null>(null);
 const channelName = ref(props.title);
 const isEditOpen = ref(false);
-const isPreferencesOpen = ref(false);
 const router = useRouter();
 
 const { email } = useClerkUser();
@@ -41,14 +38,11 @@ const { channelId } = useChannelId();
 const { workspaceId } = useWorkspaceId();
 
 const { data: member } = useCurrentMember(workspaceId.value);
-
 const { data: channels } = useGetChannels(workspaceId.value);
-
 const { mutate: updateChannel, isLoading: isUpdatingChannel } =
   useUpdateChannel(() => {
     isEditOpen.value = false;
   });
-
 const { mutate: removeChannel, isLoading: isRemovingChannel } =
   useRemoveChannel((deletedId: string) => {
     const filtered = channels?.value.filter((chan) => chan._id !== deletedId);
@@ -75,7 +69,7 @@ const handleSubmit = () => {
 };
 
 const handleDelete = async () => {
-  isPreferencesOpen.value = false;
+  if (isRemovingChannel.value) return;
 
   const ok = await confirm.value?.openModal(
     "Delete this channel?",
@@ -83,7 +77,6 @@ const handleDelete = async () => {
   );
 
   if (!ok) {
-    isPreferencesOpen.value = true;
     return;
   }
 
@@ -99,78 +92,54 @@ const handleDelete = async () => {
     class="bg-white border-b h-[49px] flex items-center px-4 overflow-hidden"
   >
     <ConfirmDialog ref="confirm" />
-    <Dialog
-      :open="isPreferencesOpen"
-      @update:open="isPreferencesOpen = !isPreferencesOpen"
+    <div
+      class="text-lg font-semibold px-2 overflow-hidden w-auto flex items-center"
     >
-      <DialogTrigger as-child>
-        <Button
-          variant="ghost"
-          class="text-lg font-semibold px-2 overflow-hidden w-auto"
-          size="sm"
-        >
-          <span class="truncate"># {{ title }}</span>
-          <FaChevronDown class="size-2.5 ml-2" />
-        </Button>
-      </DialogTrigger>
-      <DialogContent class="p-0 bg-gray-50 overflow-hidden">
-        <DialogHeader class="p-4 border-b bg-white">
-          <DialogTitle> # {{ title }} </DialogTitle>
-        </DialogHeader>
-        <div class="px-4 pb-4 flex flex-col gap-y-2">
-          <Dialog :open="isEditOpen" @update:open="handleisEditOpen">
-            <DialogTrigger as-child>
-              <div
-                class="px-5 py-4 bg-white rounded-lg border cursor-pointer hover:bg-gray-50"
-              >
-                <div class="flex items-center justify-between">
-                  <p class="text-sm font-semibold">Channel name</p>
+      <span class="truncate"># {{ title }}</span>
 
-                  <p
-                    v-if="member?.role === 'admin'"
-                    class="text-sm text-[#1264a3] hover:underline font-semibold"
-                  >
-                    Edit
-                  </p>
-                </div>
-                <p class="text-sm"># {{ title }}</p>
-              </div>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Rename this channel</DialogTitle>
-              </DialogHeader>
-              <form @submit.prevent="handleSubmit" class="space-y-4">
-                <Input
-                  v-model="channelName"
-                  :disabled="isUpdatingChannel"
-                  required
-                  autoFocus
-                  :minLength="3"
-                  :maxLength="80"
-                  placeholder="e.g. plan-budget"
-                />
-                <DialogFooter>
-                  <DialogClose as-child>
-                    <Button variant="outline" :disabled="isUpdatingChannel">
-                      Cancel
-                    </Button>
-                  </DialogClose>
-                  <Button :disabled="isUpdatingChannel"> Save </Button>
-                </DialogFooter>
-              </form>
-            </DialogContent>
-          </Dialog>
-          <button
-            v-if="member?.role === 'admin'"
-            @click="handleDelete()"
-            :disabled="isRemovingChannel"
-            class="flex items-center gap-x-2 px-5 py-4 bg-white rounded-lg cursor-pointer border hover:bg-gray-50 text-rose-600"
-          >
-            <TrashIcon class="size-4" />
-            <p class="text-sm font-semibold">Delete channel</p>
-          </button>
-        </div>
+      <Button
+        variant="ghost"
+        size="iconSm"
+        class="ml-2"
+        @click="isEditOpen = true"
+      >
+        <Pencil class="size-4" />
+      </Button>
+
+      <Button
+        v-if="member?.role === 'admin'"
+        variant="ghost"
+        size="iconSm"
+        @click="handleDelete()"
+      >
+        <TrashIcon class="size-4" />
+      </Button>
+    </div>
+
+    <Dialog :open="isEditOpen" @update:open="handleisEditOpen">
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Rename this channel</DialogTitle>
+        </DialogHeader>
+        <form @submit.prevent="handleSubmit" class="space-y-4">
+          <Input
+            v-model="channelName"
+            :disabled="isUpdatingChannel"
+            required
+            autoFocus
+            :minLength="3"
+            :maxLength="80"
+            placeholder="e.g. plan-budget"
+          />
+          <DialogFooter>
+            <DialogClose as-child>
+              <Button variant="outline" :disabled="isUpdatingChannel">
+                Cancel
+              </Button>
+            </DialogClose>
+            <Button :disabled="isUpdatingChannel"> Save </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   </div>
