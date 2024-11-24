@@ -16,3 +16,5 @@ Features:
 - Real-Time Communication: Provides instant, lag-free updates across all connected clients.
 - Reactive Data Management: Automates data updates without requiring manual code refetching, improving development efficiency.
 - Permission-Based Workflow: Implements granular permission control to ensure secure and role-appropriate access.
+
+<img src="/assets/images/1.png">
