@@ -106,6 +106,7 @@ onMounted(() => {
     observer.value = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && props.canLoadMore) {
+          console.log("loading");
           emit("loadMore");
         }
       },
@@ -133,7 +134,6 @@ watch(
     ref="messageListRef"
     class="flex-1 flex flex-col-reverse pb-4 overflow-y-auto"
   >
-    <div class="h-[1px]" ref="target" />
     <div
       v-for="[dateKey, messages] in Object.entries(groupedMessages)"
       :key="dateKey"
@@ -170,7 +170,7 @@ watch(
         @setEditingId="(messageId) => (editingId = messageId)"
       />
     </div>
-
+    <div class="h-[1px] mt-2" ref="target" />
     <div v-if="isLoadingMore" class="text-center my-2 relative">
       <hr class="absolute top-1/2 left-0 right-0 border-t border-gray-300" />
       <span
