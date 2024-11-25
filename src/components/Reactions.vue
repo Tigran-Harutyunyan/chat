@@ -15,7 +15,7 @@ import { useCurrentMember } from "@/features/members/api/useCurrentMember";
 import { Doc, Id } from "@convex/dataModel";
 
 // Emoji picker
-import data from "emoji-mart-vue-fast/data/all.json";
+
 import { Picker, EmojiIndex } from "emoji-mart-vue-fast/src";
 
 import { onClickOutside } from "@vueuse/core";
@@ -24,7 +24,11 @@ const targetRef = useTemplateRef("pop-over");
 
 onClickOutside(targetRef, (event) => (isOpen.value = false));
 
-let emojiIndex = new EmojiIndex(data);
+const emojiIndex = ref();
+
+import(`emoji-mart-vue-fast/data/all.json`).then((module) => {
+  emojiIndex.value = new EmojiIndex(module.default);
+});
 
 interface ReactionsProps {
   data: Array<

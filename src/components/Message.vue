@@ -13,13 +13,15 @@ import { Doc, Id } from "@convex/dataModel";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import Hint from "@/components/Hint.vue";
 import Renderer from "@/components/Renderer.vue";
-import Toolbar from "@/components/Toolbar.vue";
 import Thumbnail from "@/components/Thumbnail.vue";
-import Reactions from "@/components/Reactions.vue";
 import ThreadBar from "@/components/ThreadBar.vue";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const Editor = defineAsyncComponent(() => import("@/components/Editor.vue"));
+const Reactions = defineAsyncComponent(
+  () => import("@/components/Reactions.vue")
+);
+const Toolbar = defineAsyncComponent(() => import("@/components/Toolbar.vue"));
 
 interface MessageProps {
   id: Id<"messages">;

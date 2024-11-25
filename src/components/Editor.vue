@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import { ref, reactive, computed, watch, useTemplateRef } from "vue";
 import { quillEditor } from "vue3-quill";
-import { type Quill } from "quill";
-import MdSend from "@/components/icons/MdSend.vue";
 import { PiTextAa } from "vue3-icons/pi";
 import { ImageIcon, Smile, XIcon } from "lucide-vue-next";
-
 import { cn } from "@/lib/utils";
 import { onClickOutside } from "@vueuse/core";
+import MdSend from "@/components/icons/MdSend.vue";
 import Hint from "@/components/Hint.vue";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +15,6 @@ import {
 } from "@/components/ui/popover";
 
 // Emoji picker
-import data from "emoji-mart-vue-fast/data/all.json";
 import { Picker, EmojiIndex } from "emoji-mart-vue-fast/src";
 
 type EditorValue = {
@@ -47,8 +44,7 @@ const props = withDefaults(defineProps<EditorProps>(), {
 const emit = defineEmits<EmitType>();
 const isOpen = ref(false);
 
-let quill: Quill | null = null;
-let emojiIndex = new EmojiIndex(data);
+let quill: any;
 
 const text = ref("");
 const image = ref<File | null>(null);
@@ -60,7 +56,13 @@ const imageElementRef = ref<HTMLInputElement | null>(null);
 const targetRef = useTemplateRef("pop-over");
 const editorRef = useTemplateRef("editor");
 
-onClickOutside(targetRef, (event) => (isOpen.value = false));
+onClickOutside(targetRef, () => (isOpen.value = false));
+
+const emojiIndex = ref();
+
+import(`emoji-mart-vue-fast/data/all.json`).then((module) => {
+  emojiIndex.value = new EmojiIndex(module.default);
+});
 
 const isEmpty = computed(
   () =>
@@ -84,8 +86,8 @@ const state = reactive({
           enter: {
             key: "Enter",
             handler: () => {
-              const text = quill.getText();
-              const addedImage = imageElementRef.value.files?.[0] || null;
+              const text = quill?.getText();
+              const addedImage = imageElementRef.value?.files?.[0] || null;
 
               const isEmpty =
                 !addedImage &&
@@ -93,7 +95,7 @@ const state = reactive({
 
               if (isEmpty) return;
 
-              const body = JSON.stringify(quill.getContents());
+              const body = JSON.stringify(quill?.getContents());
               submitRef.value = { body, image: addedImage };
               submit();
             },
@@ -102,7 +104,7 @@ const state = reactive({
             key: "Enter",
             shiftKey: true,
             handler: () => {
-              quill.insertText(quill.getSelection()?.index || 0, "\n");
+              quill?.insertText(quill?.getSelection()?.index || 0, "\n");
             },
           },
         },
@@ -121,30 +123,34 @@ const toggleToolbar = () => {
   }
 };
 
-const onChangeImage = (event) => {
-  image.value = event.target.files[0];
-  imageSrc.value = URL.createObjectURL(image.value);
+const onChangeImage = (event: Event) => {
+  const fileInputElement = event.target as HTMLInputElement;
+
+  if (fileInputElement?.files?.[0]) {
+    image.value = fileInputElement.files[0];
+    imageSrc.value = URL.createObjectURL(image.value);
+  }
 };
 
-const handleReaction = (emoji) => {
-  let lastIndex = quill.getText().length - 1;
+const handleReaction = (emoji: { native: string }) => {
+  let lastIndex = quill?.getText().length - 1;
 
-  quill.insertText(lastIndex, emoji.native);
+  quill?.insertText(lastIndex, emoji.native);
   isOpen.value = false;
 };
 
 const onEditorReady = (data) => {
   quill = data;
-  text.value = quill.getText();
+  text.value = quill?.getText();
 
   if (props.defaultValue?.ops) {
-    quill.setContents(props.defaultValue.ops);
+    quill?.setContents(props.defaultValue.ops);
   }
-  quill.focus();
+  quill?.focus();
 };
 
 const onEditorContentUpdate = () => {
-  text.value = quill.getText();
+  text.value = quill?.getText();
 };
 
 const submit = () => {
@@ -164,9 +170,9 @@ watch(
   () => props.disabled,
   (newVal) => {
     if (newVal) {
-      quill.disable();
+      quill?.disable();
     } else {
-      quill.enable();
+      quill?.enable();
     }
   }
 );
