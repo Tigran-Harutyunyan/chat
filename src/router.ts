@@ -1,5 +1,7 @@
 import { createWebHistory, createRouter } from "vue-router";
 import { RouteRecordRaw } from 'vue-router';
+import { useUser } from "@/store/useUser";
+import { storeToRefs } from "pinia";
 
 const routes: Array<RouteRecordRaw> = [
   { path: "/sign-in", component: () => import("./views/SignInView.vue"), meta: { layout: 'AuthLayout' } },
@@ -36,39 +38,14 @@ const router = createRouter({
   routes,
 });
 
+router.beforeEach((to, _, next) => {
+  const { isSignedIn } = storeToRefs(useUser());
+
+  if (to.meta.requiresAuth && isSignedIn.value !== undefined && !isSignedIn.value) {
+    next('/sign-in');
+  } else {
+    next();
+  }
+})
+
 export default router;
-
-
-// import { createWebHistory, createRouter } from "vue-router";
-
-// const routes = [
-//   { path: "/sign-in", component: () => import("./views/SignInView.vue") },
-//   { path: "/sign-up", component: () => import("./views/SignUpView.vue") },
-//   {
-//     path: "/workspace/",
-//     component: () => import("./views/workspace/WorkspaceView.vue"),
-//   },
-//   {
-//     path: "/workspace/:workspaceId",
-//     component: () => import("./views/workspace/WorkspaceIdView.vue"),
-//   },
-//   {
-//     path: "/workspace/:workspaceId/channel/:channelId",
-//     component: () => import("./views/workspace/ChannelView.vue"),
-//   },
-//   {
-//     path: "/workspace/:workspaceId/member/:memberId",
-//     component: () => import("./views/workspace/MemberidView.vue"),
-//   },
-//   {
-//     path: "/join/:workspaceId",
-//     component: () => import("./views/JoinWorkspaceView.vue"),
-//   },
-//   { path: '/:pathMatch(.*)*', redirect: '/workspace' }
-// ];
-// const router = createRouter({
-//   history: createWebHistory(),
-//   routes,
-// });
-
-// export default router;
