@@ -8,7 +8,10 @@ import {
   Pencil,
   UserRoundPlus,
 } from "lucide-vue-next";
-import { Doc } from "@convex/dataModel";
+import { storeToRefs } from "pinia";
+import { api } from "../../../../convex/_generated/api";
+import { Doc } from "../../../../convex/_generated/dataModel";
+import { useConvexMutation } from "@convex-vue/core";
 import Hint from "@/components/Hint.vue";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,16 +21,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
+import { useRouter } from "vue-router";
 import EditWorkspaceModal from "@/features/workspace/components/EditWorkspaceModal.vue";
 import InviteModal from "@/features/workspace/components/InviteModal.vue";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 
 import { useEditWorkspaceModal } from "@/features/workspace/store/useEditWorkspaceModal";
-import { useDeleteWorkspace } from "@/features/workspace/api/useDeleteWorkspace";
 import { useWorkspaceId } from "@/features/workspace/hooks/useWorkspaceId";
 import { useClerkUser } from "@/composables/useClerkUser";
 import { useInviteModal } from "@/features/workspace/store/useInviteModal";
+import { useUi } from "@/store/useUi";
+import { toast } from "vue-sonner";
 
 interface WorkspaceHeaderProps {
   workspace: Doc<"workspaces">;
@@ -39,11 +43,31 @@ const confirm = ref<InstanceType<typeof ConfirmDialog> | null>(null);
 defineProps<WorkspaceHeaderProps>();
 
 const { onOpen } = useEditWorkspaceModal();
-
-const { mutate } = useDeleteWorkspace();
+const { workspaces } = storeToRefs(useUi());
 const { workspaceId } = useWorkspaceId();
 const { email } = useClerkUser();
 const { onOpen: onOpenInviteModal } = useInviteModal();
+const router = useRouter();
+
+const { mutate } = useConvexMutation(api.workspaces.remove, {
+  onSuccess(id) {
+    toast.success("Workspace deleted");
+
+    if (id) {
+      if (Array.isArray(workspaces.value)) {
+        const otherWorkspaces = workspaces.value.filter(
+          (item) => item?._id !== id
+        );
+        if (otherWorkspaces.length) {
+          router.push(`/workspace/${otherWorkspaces[0]?._id}`);
+        }
+      }
+    }
+  },
+  onError: () => {
+    toast.error("Failed to delete channel");
+  },
+});
 
 const showConfirm = async () => {
   const ok = await confirm.value?.openModal(
@@ -54,7 +78,7 @@ const showConfirm = async () => {
   if (!ok) return;
 
   mutate({
-    email,
+    email: email as string,
     id: workspaceId.value,
   });
 };

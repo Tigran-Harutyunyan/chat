@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import {
   Dialog,
@@ -11,7 +11,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useClerkUser } from "@/composables/useClerkUser";
 import { useEditWorkspaceModal } from "@/features/workspace/store/useEditWorkspaceModal";
-import { useCreateWorkspace } from "@/features/workspace/api/useCreateWorkspace";
+import { useEditWorkspace } from "@/features/workspace/api/useEditWorkspace";
+import { useWorkspaceId } from "@/features/workspace/hooks/useWorkspaceId";
 
 interface PreferencesModalProps {
   initialValue: string;
@@ -21,16 +22,26 @@ const props = defineProps<PreferencesModalProps>();
 
 const workspaceName = ref(props.initialValue);
 
+const { workspaceId } = useWorkspaceId();
 const { onClose } = useEditWorkspaceModal();
 const { isOpen } = storeToRefs(useEditWorkspaceModal());
-const { mutate, isLoading } = useCreateWorkspace();
+const { mutate, isLoading } = useEditWorkspace();
 const { email } = useClerkUser();
 
 const handleSubmit = () => {
-  mutate({ name: workspaceName.value, email });
+  mutate({ name: workspaceName.value, email, id: workspaceId.value });
   onClose();
   workspaceName.value = "";
 };
+
+watch(
+  () => isOpen.value,
+  (newVal) => {
+    if (newVal) {
+      workspaceName.value = props.initialValue;
+    }
+  }
+);
 </script>
 
 <template>

@@ -2,7 +2,7 @@
 import { api } from "@convex/api";
 import { useConvexQuery } from "@convex-vue/core";
 import { useRouter } from "vue-router";
-import { computed } from "vue";
+import { computed, watch } from "vue";
 import { Loader, Plus } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { useClerkUser } from "@/composables/useClerkUser";
@@ -14,11 +14,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useUi } from "@/store/useUi";
 
 const { email } = useClerkUser();
 const { onOpen } = useCreateWorkspaceModal();
 const { workspaceId } = useWorkspaceId();
 const router = useRouter();
+const { saveWorkspaces } = useUi();
 
 const { data: workspaces, isLoading: workspaceLoading } = useConvexQuery(
   api.workspaces.get,
@@ -28,18 +30,39 @@ const { data: workspaces, isLoading: workspaceLoading } = useConvexQuery(
 );
 
 const filteredWorkspaces = computed(() => {
-  if (!workspaceId.value) return [];
+  if (!workspaceId.value) return workspaces.value;
   return workspaces.value?.filter(
     (workspace) => workspace?._id !== workspaceId.value
   );
 });
 
 const activeWorkspace = computed(() => {
-  if (!workspaceId.value) return null;
+  if (!workspaceId.value) return [];
   return workspaces.value?.filter(
     (workspace) => workspace?._id === workspaceId.value
   )[0];
 });
+
+watch(
+  () => workspaces.value,
+  (newVal) => {
+    if (Array.isArray(newVal)) {
+      saveWorkspaces(newVal);
+      if (!newVal.length) {
+        onOpen();
+        return;
+      }
+
+      if (!workspaceId.value) {
+        const id = newVal[0]?._id;
+        router.push(`/workspace/${id}`);
+      }
+    }
+  },
+  {
+    immediate: true,
+  }
+);
 </script>
 
 <template>

@@ -1,5 +1,4 @@
 import { v } from "convex/values";
-import { getAuthUserId } from "@convex-dev/auth/server";
 import { mutation, query } from "./_generated/server";
 import { getCurrentUser } from '../src/lib/context'
 const generateCode = () => {
@@ -209,9 +208,10 @@ export const update = mutation({
   args: {
     id: v.id("workspaces"),
     name: v.string(),
+    email: v.string()
   },
   handler: async (ctx, args) => {
-    const userId = await getAuthUserId(ctx);
+    const userId = await getCurrentUser(ctx, args.email);
 
     if (!userId) {
       throw new Error("Unauthorized")
